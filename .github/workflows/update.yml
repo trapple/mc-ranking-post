@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Check voting period
         id: period
@@ -29,7 +29,7 @@ jobs:
           print("active=" + ("true" if datetime.now(timezone.utc) <= end else "false"))
           PY
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         if: steps.period.outputs.active == 'true'
         with: { python-version: "3.12" }
 
@@ -60,7 +60,7 @@ jobs:
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         if: steps.commit.outputs.changed == 'true'
         with: { node-version: "22" }
 
