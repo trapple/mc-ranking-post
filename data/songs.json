@@ -644,5 +644,65 @@
   "song": "2つの光",
   "status": "added",
   "video_id": "QvkK3GhWs-Q"
+ },
+ "水|butterflydream": {
+  "artist": "水",
+  "song": "Butterfly Dream",
+  "status": "skip",
+  "reason": "曜日カッコによる集計崩れ"
+ },
+ "真城ななる|天穹のオーバーチャ": {
+  "artist": "真城ななる",
+  "song": "天穹のオーバーチャ",
+  "status": "alias",
+  "alias_of": "真城ななる|天穹のオーバーチュア"
+ },
+ "叶響|angeliccreation": {
+  "artist": "叶響",
+  "song": "Angelic Creation!",
+  "status": "added",
+  "video_id": "S5jQLNAzK0o"
+ },
+ "夜乃すみ|優柔不断ラビリンス": {
+  "artist": "夜乃すみ",
+  "song": "優柔不断ラビリンス",
+  "status": "added",
+  "video_id": "a-qRv2HS2mw"
+ },
+ "伊月知世|イラティクオシー": {
+  "artist": "伊月知世",
+  "song": "イラティクオシー",
+  "status": "added",
+  "video_id": "8LaCPe9yhis"
+ },
+ "神凪アンナ|相対性インソムニア": {
+  "artist": "神凪アンナ",
+  "song": "相対性インソムニア",
+  "status": "added",
+  "video_id": "NxJ60foPfas"
+ },
+ "20260930063709|僕とあなたと": {
+  "artist": "2026/09/30 06:37:09",
+  "song": "僕とあなたと",
+  "status": "skip",
+  "reason": "日時カッコによる集計崩れ"
+ },
+ "月|エフィメロスεφήμερος": {
+  "artist": "月",
+  "song": "エフィメロス -εφήμερος-",
+  "status": "skip",
+  "reason": "前テーマ1位記念ライブ告知の曜日カッコ（投票ではない）"
+ },
+ "現実みろ|ひみつの花園": {
+  "artist": "現実みろ",
+  "song": "ひみつの花園",
+  "status": "added",
+  "video_id": "rZN5k7F73us"
+ },
+ "音御光歌|another": {
+  "artist": "音御光歌",
+  "song": "another",
+  "status": "added",
+  "video_id": "0POua9yZ_tA"
  }
 }
