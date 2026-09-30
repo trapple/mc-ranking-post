@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VTuber楽曲ランキング 投票サポーター</title>
+<meta name="description" content="ミューコミVR #VTuber楽曲ランキング 今回のテーマは『歌始まり！！』。イントロではなく歌から始まっている楽曲に投票しよう。投票文をかんたん作成＆そのままXへポスト。">
+<meta property="og:title" content="VTuber楽曲ランキング 投票サポーター">
+<meta property="og:description" content="イントロではなく歌から始まっている楽曲に投票しよう！締切 10/27(火) 23:59、結果発表 11/1(日) 放送内。投票文をかんたん作成できます。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://mc-ranking-utahajimari.trapplejp.workers.dev/rules.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#ff5fa8; --pink-d:#e0328a; --cyan:#27c3e8; --yellow:#ffe94a; --orange:#ff7a1a;
+  --ink:#2a1b2e; --muted:#6d5a70; --card:#ffffff; --line:#f2d6e6; --ok:#12a150; --ng:#e5243b;
+  --bg: linear-gradient(180deg,#ffb3e6 0%,#ffd1e8 35%,#ffe9c9 75%,#fff4b8 100%);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
+  color:var(--ink); background:#ffd1e8; background-image:var(--bg); background-attachment:fixed;
+  line-height:1.7; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:760px;margin:0 auto;padding:24px 16px 64px}
+header.hero{text-align:center;padding:24px 0 8px}
+.brand{display:inline-block;font-weight:800;font-size:.85rem;letter-spacing:.1em;color:#fff;background:linear-gradient(90deg,var(--cyan),var(--pink));padding:4px 14px;border-radius:999px}
+.hero h1{margin:14px 0 4px;font-size:clamp(1.6rem,6vw,2.6rem);font-weight:800;color:#fff;
+  text-shadow:0 3px 0 var(--pink-d),0 0 18px rgba(224,50,138,.45);line-height:1.25}
+.theme{margin:18px auto 0;background:#fff;border-radius:24px;padding:18px 16px 20px;box-shadow:0 8px 0 rgba(224,50,138,.18);position:relative}
+.theme small{display:block;color:var(--muted);font-weight:800}
+.theme .t{font-size:clamp(2rem,10vw,3.4rem);font-weight:800;color:var(--pink-d);line-height:1.2}
+.theme .t span{display:inline-block;animation:bounce 1.6s infinite}
+.theme .t span:nth-child(2){animation-delay:.08s}.theme .t span:nth-child(3){animation-delay:.16s}
+.theme .t span:nth-child(4){animation-delay:.24s}.theme .t span:nth-child(5){animation-delay:.32s}
+.theme .t span:nth-child(6){animation-delay:.4s}.theme .t span:nth-child(7){animation-delay:.48s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+@media (prefers-reduced-motion:reduce){.theme .t span{animation:none}}
+.theme p{margin:8px 0 0;font-weight:800}
+.dates{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.date{background:#fff;border-radius:16px;padding:12px;text-align:center;border:3px solid var(--line)}
+.date b{display:block;font-size:.8rem;color:var(--muted)}
+.date strong{font-size:1.1rem}
+.countdown{margin-top:12px;text-align:center;font-weight:800;background:var(--yellow);border-radius:14px;padding:10px;font-size:1.05rem}
+.countdown.closed{background:#ddd;color:#555}
+.countdown .num{font-size:1.5rem;color:var(--pink-d);margin:0 2px}
+
+section.card{background:var(--card);border-radius:22px;padding:20px 18px;margin-top:22px;box-shadow:0 6px 0 rgba(224,50,138,.12)}
+h2{margin:0 0 12px;font-size:1.2rem;font-weight:800;display:inline-block;background:var(--yellow);padding:2px 14px;border-radius:999px}
+label{display:block;font-weight:800;font-size:.9rem;margin:14px 0 4px}
+label .hint{font-weight:500;color:var(--muted);font-size:.8rem;margin-left:4px}
+input[type=text],input[type=url],textarea{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--line);border-radius:12px;background:#fffafc;color:var(--ink)}
+input[type=text]:focus,input[type=url]:focus,textarea:focus{outline:none;border-color:var(--pink)}
+textarea{min-height:84px;resize:vertical}
+.msgs{margin:6px 0 0;padding:0;list-style:none;font-size:.85rem}
+.msgs li{padding:6px 10px;border-radius:10px;margin-top:4px}
+.msgs li.ng{background:#ffe6ea;color:var(--ng);font-weight:800}
+.msgs li.warn{background:#fff4d6;color:#8a5a00}
+.preview-h{display:flex;justify-content:space-between;align-items:baseline;margin-top:18px}
+.preview-h b{font-size:.9rem}
+.counter{font-size:.8rem;color:var(--muted)}
+.counter.over{color:var(--ng);font-weight:800}
+pre.preview{white-space:pre-wrap;word-break:break-word;margin:6px 0 0;font:inherit;background:#f7fbff;border:2px dashed var(--cyan);border-radius:14px;padding:14px;min-height:96px}
+.status{margin-top:10px;font-weight:800;padding:8px 12px;border-radius:12px;font-size:.9rem}
+.status.ok{background:#e3f8ec;color:var(--ok)}
+.status.ng{background:#ffe6ea;color:var(--ng)}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.btn{appearance:none;border:0;border-radius:14px;padding:14px 10px;font:inherit;font-weight:800;font-size:1rem;cursor:pointer;color:#fff;text-align:center;text-decoration:none;display:block;transition:transform .08s}
+.btn:active{transform:translateY(2px)}
+.btn.x{background:#111;box-shadow:0 4px 0 #000}
+.btn.copy{background:var(--pink);box-shadow:0 4px 0 var(--pink-d)}
+.btn.link{width:100%;margin-top:10px;background:var(--cyan);box-shadow:0 4px 0 #1596b5}
+.btn[aria-disabled=true]{opacity:.35;pointer-events:none}
+.btn small{display:block;font-size:.72rem;font-weight:500;opacity:.9}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-weight:800;opacity:0;transition:.25s;pointer-events:none;z-index:10;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.today{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.chk{display:flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:14px;padding:12px;font-weight:800;cursor:pointer;margin:0}
+.chk input{width:22px;height:22px;accent-color:var(--pink)}
+.chk.done{background:#fff0f7;border-color:var(--pink)}
+.note{font-size:.82rem;color:var(--muted);margin:8px 0 0}
+
+ul.rules{margin:0;padding-left:1.2em}
+ul.rules li{margin:4px 0}
+.embed .twitter-tweet{margin:0 auto!important}
+.embed a{color:var(--pink-d)}
+.share .btn{max-width:360px;margin:8px auto 0}
+.bubble{background:#dff4ff;border-radius:18px;padding:12px 14px;margin-top:12px;font-weight:800;font-size:.92rem;text-align:center}
+.caution{border-left:10px solid var(--orange)}
+.caution h2{background:var(--orange);color:#fff}
+.ex{display:grid;gap:8px;margin-top:8px}
+.ex div{background:#fff7f0;border-radius:12px;padding:10px 12px;font-size:.9rem}
+.ex code{font-family:inherit;font-weight:800;background:#fff;border:1px solid #f0d0b0;border-radius:6px;padding:0 6px}
+.ex .to{color:var(--ng);font-weight:800;display:block}
+details.img{margin-top:22px;background:#fff;border-radius:22px;padding:14px 18px}
+details.img summary{cursor:pointer;font-weight:800}
+details.img img{width:100%;height:auto;border-radius:12px;margin-top:10px;display:block}
+footer{text-align:center;font-size:.8rem;color:var(--muted);margin-top:32px}
+footer a{color:var(--pink-d)}
+@media (max-width:420px){.btns,.today{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <span class="brand">ミューコミVR</span>
+  <h1>VTuber楽曲ランキング<br>投票サポーター</h1>
+  <div class="theme">
+    <small>今回のテーマは・・・</small>
+    <div class="t" aria-label="歌始まり！！"><span>歌</span><span>始</span><span>ま</span><span>り</span><span>！</span><span>！</span><span>🎤</span></div>
+    <p>投票対象は「イントロではなく<br>歌から始まっている楽曲」</p>
+  </div>
+  <div class="dates">
+    <div class="date"><b>🗳️ 投票締切</b><strong>10月27日（火）<br>23:59</strong></div>
+    <div class="date"><b>🏆 結果発表</b><strong>11月1日（日）<br>放送内</strong></div>
+  </div>
+  <div class="countdown" id="countdown">&nbsp;</div>
+</header>
+
+<section class="card" id="maker">
+  <h2>✍️ 投票文をつくる</h2>
+  <p class="note" style="margin-top:0">入力するだけで正しい形式の投票文ができます。<b>公式表記のコピペが安全！</b></p>
+
+  <label for="artist">アーティスト名 <span class="hint">（ ）の中に入ります</span></label>
+  <input type="text" id="artist" autocomplete="off" placeholder="例：アーティスト名">
+  <ul class="msgs" id="m-artist"></ul>
+
+  <label for="song">楽曲名 <span class="hint">『 』の中に入ります</span></label>
+  <input type="text" id="song" autocomplete="off" placeholder="例：楽曲名">
+  <ul class="msgs" id="m-song"></ul>
+
+  <label for="comment">投票理由・応援コメント <span class="hint">任意</span></label>
+  <textarea id="comment" placeholder="歌い出しの一声で心をつかまれました！など"></textarea>
+  <ul class="msgs" id="m-comment"></ul>
+
+  <label for="video">動画URL <span class="hint">任意・YouTubeなど</span></label>
+  <input type="url" id="video" autocomplete="off" inputmode="url" placeholder="https://www.youtube.com/watch?v=...">
+  <ul class="msgs" id="m-video"></ul>
+
+  <div class="preview-h"><b>プレビュー</b><span class="counter" id="counter"></span></div>
+  <pre class="preview" id="preview"></pre>
+  <div class="status" id="status" hidden></div>
+
+  <div class="btns">
+    <a class="btn x" id="btn-x" href="#" target="_blank" rel="noopener" aria-disabled="true">𝕏 でポスト<small>① Xでのポスト</small></a>
+    <button type="button" class="btn copy" id="btn-copy" aria-disabled="true">📋 コピー<small>DM・手動ポスト用</small></button>
+  </div>
+  <button type="button" class="btn link" id="btn-link" aria-disabled="true">🔗 ワンタップリンクをコピー<small>自分宛てDMや下書きに貼っておくと、X上のタップで毎日すぐ投稿できます</small></button>
+  <p class="note">DMは <a href="https://x.com/mc1242" target="_blank" rel="noopener">@mc1242</a> へ貼り付けて送信。</p>
+</section>
+
+<section class="card">
+  <h2>📅 今日の投票チェック</h2>
+  <p class="note" style="margin-top:0">①ポスト・②DM それぞれ<b>1人1日1回まで</b>（ひとり1日最大2票）。同じ曲でも違う曲でもOK！</p>
+  <div class="today">
+    <label class="chk" id="c-post"><input type="checkbox" id="done-post"> ① ポスト済み</label>
+    <label class="chk" id="c-dm"><input type="checkbox" id="done-dm"> ② DM済み</label>
+  </div>
+  <p class="note" id="today-label"></p>
+</section>
+
+<section class="card embed">
+  <h2>📝 投票ルール・注意点</h2>
+  <blockquote class="twitter-tweet" data-lang="ja" data-dnt="true"><a href="https://twitter.com/mc1242/status/2104230697573797996">#VTuber楽曲ランキング 今回のテーマは・・・『歌始まり！！』</a></blockquote>
+  <p class="note">投稿が表示されない場合は <a href="https://twitter.com/mc1242/status/2104230697573797996" target="_blank" rel="noopener">こちらから元の投稿</a> をご覧ください。</p>
+</section>
+
+<section class="card share">
+  <h2>📣 このサイトをシェア</h2>
+  <p class="note" style="margin-top:0">投票の輪を広げよう！</p>
+  <a class="btn x" id="btn-share" href="https://x.com/intent/tweet?text=VTuber%E6%A5%BD%E6%9B%B2%E3%83%A9%E3%83%B3%E3%82%AD%E3%83%B3%E3%82%B0%20%E6%8A%95%E7%A5%A8%E3%82%B5%E3%83%9D%E3%83%BC%E3%82%BF%E3%83%BC%F0%9F%8E%A4%0A%E4%BB%8A%E5%9B%9E%E3%81%AE%E3%83%86%E3%83%BC%E3%83%9E%E3%80%8C%E6%AD%8C%E5%A7%8B%E3%81%BE%E3%82%8A%EF%BC%81%EF%BC%81%E3%80%8D%E3%81%AE%E6%8A%95%E7%A5%A8%E6%96%87%E3%82%92%E3%81%8B%E3%82%93%E3%81%9F%E3%82%93%E4%BD%9C%E6%88%90%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%EF%BC%81%0Ahttps%3A%2F%2Fmc-ranking-utahajimari.trapplejp.workers.dev%2F%0Ahttps%3A%2F%2Fx.com%2Fmc1242%2Fstatus%2F2104230697573797996" target="_blank" rel="noopener">𝕏 でシェアする</a>
+</section>
+
+<footer>
+  <p>最新情報は <a href="https://x.com/mc1242" target="_blank" rel="noopener">ミューコミVR公式X（@mc1242）</a> をチェック✅</p>
+  <p>※このサイトは開発にAIを利用しています。</p>
+</footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const DEADLINE = new Date("2026-10-27T23:59:59+09:00"); // JST
+  const TAGS = "#VTuber楽曲ランキング #ミューコミVR";
+  const $ = id => document.getElementById(id);
+  const artist = $("artist"), song = $("song"), comment = $("comment"), video = $("video");
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch { return null; } },
+    set(k,v){ try { localStorage.setItem(k,v); } catch {} }
+  };
+
+  // ---- countdown (JST) ----
+  const cd = $("countdown");
+  function tick(){
+    const ms = DEADLINE - Date.now();
+    if (ms <= 0){ cd.classList.add("closed"); cd.textContent = "投票は締め切りました。結果発表は11月1日（日）放送内で！"; return; }
+    const d = Math.floor(ms/864e5), h = Math.floor(ms/36e5)%24, m = Math.floor(ms/6e4)%60, s = Math.floor(ms/1e3)%60;
+    cd.innerHTML = `締切まであと <span class="num">${d}</span>日 <span class="num">${h}</span>時間 <span class="num">${String(m).padStart(2,"0")}</span>分 <span class="num">${String(s).padStart(2,"0")}</span>秒`;
+  }
+  tick(); setInterval(tick, 1000);
+
+  // ---- validation ----
+  const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  function check(v, kind){
+    const out = [];
+    if (/[()]/.test(v)) out.push(["ng", kind==="comment"
+      ? "半角カッコ ( ) はコメントで使えません（顔文字や日付の曜日など）。アーティスト名として集計されてしまいます。"
+      : "半角カッコ ( ) が含まれています。集計が崩れるため使えません。"]);
+    if (/[『』]/.test(v)) out.push(["ng", kind==="comment"
+      ? "二重カッコ『 』はコメントで使えません。曲名として集計されてしまいます。"
+      : "二重カッコ『 』が含まれています。集計が崩れるため使えません。"]);
+    if (kind !== "comment"){
+      if (v !== v.trim()) out.push(["warn","前後の空白は自動で取り除きます。"]);
+      if (/[　]/.test(v) || /\s{2,}/.test(v)) out.push(["warn","全角スペースや連続スペースが含まれています。公式表記と一致しているか確認してください。"]);
+      if (/[（）]/.test(v)) out.push(["warn","全角カッコ（ ）が含まれています。公式表記どおりか確認してください。"]);
+    }
+    return out;
+  }
+  function render(ul, msgs){ ul.innerHTML = msgs.map(([c,t]) => `<li class="${c}">${esc(t)}</li>`).join(""); }
+
+  // X weighted length: CJK etc. count 2, basic Latin 1 (approximation of twitter-text)
+  function xLen(s){
+    let n = 0;
+    s = s.replace(/https?:\/\/\S+/g, u => { n += 23; return ""; });
+    for (const ch of s){
+      const c = ch.codePointAt(0);
+      n += (c <= 0x10FF || (c>=0x2000&&c<=0x200D) || (c>=0x2010&&c<=0x201F) || (c>=0x2032&&c<=0x2037)) ? 1 : 2;
+    }
+    return n;
+  }
+
+  function build(){
+    const a = artist.value.trim(), s = song.value.trim(), c = comment.value.trim();
+    const ma = check(artist.value,"artist"), ms = check(song.value,"song"), mc = check(comment.value,"comment");
+    render($("m-artist"), ma); render($("m-song"), ms); render($("m-comment"), mc);
+    const v = video.value.trim(), mv = [];
+    if (v && !/^https?:\/\/[^\s]+\.[^\s]+$/.test(v)) mv.push(["ng","URLの形式ではありません（https:// から始まるURLを入力してください）"]);
+    else if (/[()『』]/.test(v)) mv.push(["ng","URLにカッコが含まれていると集計が崩れるため使えません。"]);
+    render($("m-video"), mv);
+
+    const text = `(${a || "アーティスト名"})の『${s || "楽曲名"}』に投票します！\n\n${c ? c + "\n\n" : ""}${TAGS}${v ? "\n" + v : ""}`;
+    $("preview").textContent = text;
+
+    const len = xLen(text), cnt = $("counter");
+    cnt.textContent = `${len} / 280`;
+    cnt.classList.toggle("over", len > 280);
+
+    const hasNg = [...ma,...ms,...mc,...mv].some(m => m[0]==="ng");
+    const closed = Date.now() > DEADLINE;
+    const ok = a && s && !hasNg && len <= 280 && !closed;
+    const st = $("status");
+    if (a || s || c){
+      st.hidden = false;
+      st.className = "status " + (ok ? "ok" : "ng");
+      st.textContent = ok ? "✅ この形式でOK！" :
+        closed ? "投票は締め切りました" :
+        !a || !s ? "アーティスト名と楽曲名を入力してください" :
+        hasNg ? "⚠️ 赤いエラーを直してください" : "⚠️ 文字数がXの上限を超えています";
+    } else st.hidden = true;
+
+    const bx = $("btn-x");
+    bx.setAttribute("aria-disabled", String(!ok));
+    bx.href = ok ? "https://x.com/intent/tweet?text=" + encodeURIComponent(text) : "#";
+    $("btn-copy").setAttribute("aria-disabled", String(!ok));
+    $("btn-link").setAttribute("aria-disabled", String(!ok));
+    $("btn-link").dataset.text = ok ? bx.href : "";
+    $("btn-copy").dataset.text = ok ? text : "";
+    store.set("draft", JSON.stringify({a:artist.value, s:song.value, c:comment.value, v:video.value}));
+  }
+
+  try { const d = JSON.parse(store.get("draft")||"null"); if (d){ artist.value=d.a||""; song.value=d.s||""; comment.value=d.c||""; video.value=d.v||""; } } catch {}
+  [artist, song, comment, video].forEach(el => el.addEventListener("input", build));
+  build();
+
+  // ---- toast / copy ----
+  const toast = $("toast"); let tt;
+  function show(msg){ toast.textContent = msg; toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(()=>toast.classList.remove("show"), 2600); }
+  async function copy(text){
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch {
+      const ta = document.createElement("textarea"); ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select(); let r=false; try { r = document.execCommand("copy"); } catch {} ta.remove(); return r;
+    }
+  }
+  $("btn-copy").addEventListener("click", async e => {
+    const t = e.currentTarget.dataset.text;
+    if (!t) return;
+    const r = await copy(t);
+    show(r ? "コピーしました！" : "コピーできませんでした。プレビューを長押しでコピーしてください");
+  });
+  $("btn-link").addEventListener("click", async e => {
+    const t = e.currentTarget.dataset.text;
+    if (!t) return;
+    const r = await copy(t);
+    show(r ? "リンクをコピーしました！X上に貼っておこう" : "コピーできませんでした");
+  });
+  $("btn-x").addEventListener("click", e => {
+    if (e.currentTarget.getAttribute("aria-disabled")==="true"){ e.preventDefault(); return; }
+    markToday("post");
+  });
+
+  // ---- today's check (JST date) ----
+  const jstDate = () => new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Tokyo"}).format(new Date()); // YYYY-MM-DD in JST
+  function loadToday(){
+    let d = {}; try { d = JSON.parse(store.get("today")||"{}"); } catch {}
+    return d.date === jstDate() ? d : {date: jstDate(), post:false, dm:false};
+  }
+  function saveToday(d){ store.set("today", JSON.stringify(d)); paintToday(d); }
+  function paintToday(d){
+    $("done-post").checked = !!d.post; $("done-dm").checked = !!d.dm;
+    $("c-post").classList.toggle("done", !!d.post); $("c-dm").classList.toggle("done", !!d.dm);
+    const [y,m,day] = d.date.split("-").map(Number);
+    $("today-label").textContent = `${m}月${day}日（日本時間）の記録です。日付が変わると自動でリセットされます。この端末のブラウザにだけ保存されます。`;
+  }
+  function markToday(k){ const d = loadToday(); d[k] = true; saveToday(d); }
+  ["post","dm"].forEach(k => $("done-"+k).addEventListener("change", e => { const d = loadToday(); d[k] = e.target.checked; saveToday(d); }));
+  paintToday(loadToday());
+  setInterval(() => paintToday(loadToday()), 60000);
+})();
+</script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

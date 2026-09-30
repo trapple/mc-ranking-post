@@ -1,0 +1,9 @@
+node_modules/
+.wrangler/
+.DS_Store
+# 他人のポスト本文・一時データはコミットしない
+data/posts.json
+data/urls/
+data/plan.json
+data/rankings/
+__pycache__/
