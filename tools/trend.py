@@ -59,9 +59,19 @@ def main():
         "deadline": datetime.fromisoformat(tally.CFG["deadline_jst"]).strftime("%-m/%-d %H:%M"),
     }
     tpl = (Path(__file__).parent / "trend_template.html").read_text()
-    out = ROOT / "data/trend.html"
-    out.write_text(tpl.replace("/*__DATA__*/null", json.dumps(data, ensure_ascii=False)))
-    print(f"wrote {out} (as of {data['asOf']} JST, {len(votes)} votes, top {len(top)})")
+    page = tpl.replace("/*__DATA__*/null", json.dumps(data, ensure_ascii=False))
+    out = ROOT / "data/trend.html"  # Artifact 用（スケルトンは公開時に付く）
+    out.write_text(page)
+    site = tally.CFG["site_url"].rstrip("/")
+    head = ('<!doctype html>\n<html lang="ja">\n<meta charset="utf-8">\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+            f'<meta name="description" content="VTuber楽曲ランキング「{data['theme']}」の公開ポスト票を公式ルールで数えた非公式集計。上位曲の票数推移と日別票数。">\n'
+            f'<meta property="og:title" content="「{data['theme']}」票数の推移（非公式）">\n'
+            f'<meta property="og:image" content="{site}/rules.jpg">\n<meta name="twitter:card" content="summary_large_image">\n'
+            '<style>body{margin:0}</style>\n')
+    back = f'<p style="text-align:center;font-size:13px;padding-bottom:32px"><a href="{site}/" style="color:var(--accent)">投票文をかんたん作成 →</a></p>\n'
+    (ROOT / "public/trend.html").write_text(head + page + back + "</html>\n")
+    print(f"wrote {out} and public/trend.html (as of {data['asOf']} JST, {len(votes)} votes, top {len(top)})")
 
 
 if __name__ == "__main__":
