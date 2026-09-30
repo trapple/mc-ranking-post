@@ -1,6 +1,6 @@
 """暫定票数の推移ページ（HTML）を生成する。tally.py と同じルール（厳密モード）で数える。
 usage: python3 tools/trend.py [--top N]  -> data/trend.html"""
-import collections, json, sys
+import collections, json, subprocess, sys, tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -67,11 +67,29 @@ def main():
             '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
             f'<meta name="description" content="VTuber楽曲ランキング「{data['theme']}」の公開ポスト票を公式ルールで数えた非公式集計。上位曲の票数推移と日別票数。">\n'
             f'<meta property="og:title" content="「{data['theme']}」票数の推移（非公式）">\n'
-            f'<meta property="og:image" content="{site}/rules.jpg">\n<meta name="twitter:card" content="summary_large_image">\n'
+            f'<meta property="og:image" content="{site}/trend-og.png?v={data["asOf"].replace("/", "").replace(" ", "").replace(":", "")}">\n'
+            f'<meta property="og:url" content="{site}/trend">\n<meta property="og:type" content="website">\n'
+            f'<meta property="og:description" content="{data["asOf"]}時点・公開ポストのみの勝手に集計。上位曲の票数推移と日別票数。">\n'
+            '<meta name="twitter:card" content="summary_large_image">\n'
             '<style>body{margin:0}</style>\n')
     back = f'<p style="text-align:center;font-size:13px;padding-bottom:32px"><a href="{site}/" style="color:var(--accent)">投票文をかんたん作成 →</a></p>\n'
     (ROOT / "public/trend.html").write_text(head + page + back + "</html>\n")
+    render_og(data)
     print(f"wrote {out} and public/trend.html (as of {data['asOf']} JST, {len(votes)} votes, top {len(top)})")
+
+
+CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+
+def render_og(data):
+    """1200x630 のシェア用画像を headless Chrome で public/trend-og.png に書き出す"""
+    html = (Path(__file__).parent / "trend_og.html").read_text().replace("/*__DATA__*/null", json.dumps(data, ensure_ascii=False))
+    with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False) as f:
+        f.write(html)
+    out = ROOT / "public/trend-og.png"
+    subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--window-size=1200,630",
+                    "--virtual-time-budget=5000", f"--screenshot={out}", f"file://{f.name}"],
+                   capture_output=True, timeout=90, check=True)
 
 
 if __name__ == "__main__":
