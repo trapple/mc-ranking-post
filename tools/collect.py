@@ -28,11 +28,17 @@ def run(w):
               "（https://x.com/ユーザー名/status/ID 形式）を1行に1つずつ、それだけを列挙。表や説明文は不要。組み込みの X 検索 (x_search) を"
               "直接使って X (Twitter) を検索して。前置きは不要")
     try:
-        out = subprocess.run(["grok", "-p", prompt, "--tools", "", "--always-approve", "--max-turns", "40"],
-                             capture_output=True, text=True, timeout=TIMEOUT).stdout
+        r = subprocess.run(["grok", "-p", prompt, "--tools", "", "--always-approve", "--max-turns", "40"],
+                           capture_output=True, text=True, timeout=TIMEOUT)
+        out, err = r.stdout, (r.stderr if r.returncode else "")
     except subprocess.TimeoutExpired as e:
         out = (e.stdout or b"").decode() if isinstance(e.stdout, bytes) else (e.stdout or "")
+        err = ""
     found = set(re.findall(r"https://(?:x|twitter)\.com/\w+/status/\d+", out))
+    if not found and (err or "error" in out.lower()):
+        # 失敗した区間はファイルを作らない（確定扱いにして再検索されなくなるのを防ぐ）
+        m = re.search(r'"message":\s*"([^"\\]*)', err or out)
+        return f"{path.name}: FAILED {m.group(1) if m else (err or out).strip()[-200:]}"
     old = set(path.read_text().split()) if path.exists() else set()
     path.write_text("\n".join(sorted(old | found)) + "\n")
     return f"{path.name}: +{len(found - old)} (total {len(old | found)})"
