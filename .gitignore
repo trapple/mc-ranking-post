@@ -8,3 +8,4 @@ data/plan.json
 data/rankings/
 __pycache__/
 data/*.log
+data/trend.html

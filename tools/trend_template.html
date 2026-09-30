@@ -1,0 +1,182 @@
+<title>歌始まり 票数推移</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<style>
+/* Layout: one reading column — headline figures, the cumulative line chart, then the daily table as its readable twin. */
+:root {
+  --bg: #fcfcfb; --surface: #ffffff; --ink: #0b0b0b; --ink-2: #52514e; --muted: #8a8984;
+  --line: #e7e6e2; --grid: #efeee9; --accent: #d63a86;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7; --s8: #e34948;
+  --display: "Dela Gothic One", "Hiragino Sans", sans-serif;
+  --body: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1a19; --surface: #222220; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #8f8e86;
+    --line: #3a3a37; --grid: #2d2d2a; --accent: #f06aa8;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1a1a19; --surface: #222220; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #8f8e86;
+  --line: #3a3a37; --grid: #2d2d2a; --accent: #f06aa8;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); line-height: 1.6; }
+.wrap { max-width: 960px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; display: grid; gap: 28px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 700; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 5vw, 40px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.meta { color: var(--ink-2); font-size: 13px; margin: 0; }
+.figures { display: flex; flex-wrap: wrap; gap: 8px 28px; font-variant-numeric: tabular-nums; }
+.figures div { display: grid; }
+.figures b { font-size: 22px; }
+.figures span { font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+h2 { font-size: 15px; margin: 0 0 10px; letter-spacing: .04em; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; list-style: none; padding: 0; margin: 0 0 12px; font-size: 13px; }
+.legend li { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; flex: none; }
+.legend small { color: var(--muted); font-variant-numeric: tabular-nums; }
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; touch-action: pan-y; }
+.chart text { fill: var(--muted); font-size: 11px; font-family: var(--body); font-variant-numeric: tabular-nums; }
+.chart .endlabel { fill: var(--ink); font-size: 12px; font-weight: 700; }
+.tip { position: absolute; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 10px; font-size: 12px; min-width: 200px; box-shadow: 0 4px 16px rgb(0 0 0 / .12); font-variant-numeric: tabular-nums; }
+.tip header { font-weight: 700; margin-bottom: 4px; display: block; }
+.tip ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.tip li { display: grid; grid-template-columns: 10px 1fr auto; gap: 6px; align-items: center; }
+.tip li i { width: 10px; height: 3px; border-radius: 2px; }
+.tip li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
+.tablebox { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th { color: var(--muted); font-weight: 400; font-size: 12px; letter-spacing: .04em; }
+td.name, th.name { text-align: left; white-space: normal; min-width: 12em; }
+td.name small { display: block; color: var(--muted); }
+td.total { font-weight: 700; }
+td .sw { display: inline-block; width: 10px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.note { color: var(--muted); font-size: 12px; margin: 0; max-width: 65ch; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">VTuber楽曲ランキング 非公式・勝手に集計</div>
+    <h1 id="title">「歌始まり！！」票数の推移</h1>
+    <p class="meta" id="meta"></p>
+    <div class="figures" id="figures"></div>
+  </header>
+
+  <section aria-labelledby="h-chart">
+    <h2 id="h-chart">上位曲の累計票数（1時間ごと・日本時間）</h2>
+    <ul class="legend" id="legend"></ul>
+    <div class="chart" id="chart"></div>
+  </section>
+
+  <section aria-labelledby="h-table">
+    <h2 id="h-table">日別の票数</h2>
+    <div class="tablebox"><table id="table"></table></div>
+  </section>
+
+  <p class="note">X上の公開ポスト（#VTuber楽曲ランキング #ミューコミVR）を公式ルールで数えた非公式集計です。( ) と『 』が1組ずつ・両ハッシュタグ・1人1日1回（日本時間）。DM票は含みません。</p>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const COLORS = ["--s1","--s2","--s3","--s4","--s5","--s6","--s7","--s8"].map(v => `var(${v})`);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const hourDate = s => new Date(s + ":00+09:00");
+const fmtHour = s => { const [d, t] = s.split("T"); const [, m, dd] = d.split("-"); return `${+m}/${+dd} ${t.slice(0,2)}時`; };
+
+$("meta").textContent = `${D.asOf} 時点 ・ 有効票 ${D.counted.toLocaleString()} ・ 投票締切 ${D.deadline}`;
+const lead = D.series[0], second = D.series[1];
+$("figures").innerHTML = [
+  [`${lead.cum.at(-1)}`, `1位 ${lead.artist}`],
+  [`+${lead.cum.at(-1) - second.cum.at(-1)}`, "2位との差"],
+  [`${D.songs}`, "票が入った曲"],
+].map(([b, s]) => `<div><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join("");
+
+$("legend").innerHTML = D.series.map((s, i) =>
+  `<li><i style="background:${COLORS[i]}"></i>${esc(s.artist)}「${esc(s.song)}」<small>${s.cum.at(-1)}</small></li>`).join("");
+
+// ---- chart ----
+function drawChart() {
+  const box = $("chart");
+  const W = Math.max(320, box.clientWidth), H = W < 560 ? 300 : 380;
+  const m = { t: 12, r: W < 560 ? 12 : 150, b: 28, l: 40 };
+  const n = D.hours.length, maxV = Math.max(...D.series.map(s => s.cum.at(-1)));
+  const step = maxV > 200 ? 50 : maxV > 80 ? 20 : 10;
+  const yMax = Math.ceil(maxV / step) * step;
+  const x = i => m.l + (W - m.l - m.r) * (n <= 1 ? 0 : i / (n - 1));
+  const y = v => m.t + (H - m.t - m.b) * (1 - v / yMax);
+  let g = "";
+  for (let v = 0; v <= yMax; v += step) {
+    g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/>`;
+    g += `<text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  }
+  D.hours.forEach((h, i) => {
+    if (h.endsWith("T00:00") || i === 0) {
+      g += `<line x1="${x(i)}" x2="${x(i)}" y1="${m.t}" y2="${H - m.b}" stroke="var(--line)" stroke-width="1"/>`;
+      g += `<text x="${x(i) + 4}" y="${H - m.b + 16}">${fmtHour(h).split(" ")[0]}</text>`;
+    }
+  });
+  let lines = "";
+  [...D.series].map((s, i) => [s, i]).reverse().forEach(([s, i]) => {
+    const d = s.cum.map((v, j) => `${j ? "L" : "M"}${x(j).toFixed(1)},${y(v).toFixed(1)}`).join("");
+    lines += `<path d="${d}" fill="none" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round"/>`;
+    lines += `<path d="${d}" fill="none" stroke="${COLORS[i]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  });
+  // 右端ラベル（上位3曲、重なりを避けて縦にずらす）
+  let labels = "";
+  if (m.r > 100) {
+    const ends = D.series.slice(0, 3).map((s, i) => ({ i, v: s.cum.at(-1), y: y(s.cum.at(-1)), t: s.artist }));
+    ends.sort((a, b) => a.y - b.y);
+    for (let k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 15) ends[k].y = ends[k - 1].y + 15;
+    ends.forEach(e => {
+      labels += `<circle cx="${x(n - 1)}" cy="${y(e.v)}" r="4" fill="${COLORS[e.i]}" stroke="var(--bg)" stroke-width="2"/>`;
+      labels += `<text class="endlabel" x="${x(n - 1) + 10}" y="${e.y + 4}">${esc(e.t)} ${e.v}</text>`;
+    });
+  }
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="上位${D.series.length}曲の累計票数の推移">${g}${lines}${labels}
+    <g id="hover" visibility="hidden"><line id="hline" y1="${m.t}" y2="${H - m.b}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/><g id="hdots"></g></g>
+    <rect x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent" id="hit"/></svg>
+    <div class="tip" id="tip" hidden></div>`;
+
+  const hit = $("hit"), tip = $("tip"), hover = $("hover");
+  const show = ev => {
+    const r = hit.getBoundingClientRect();
+    const px = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left) / r.width;
+    const i = Math.max(0, Math.min(n - 1, Math.round(px * (n - 1))));
+    hover.setAttribute("visibility", "visible");
+    $("hline").setAttribute("x1", x(i)); $("hline").setAttribute("x2", x(i));
+    $("hdots").innerHTML = D.series.map((s, k) =>
+      `<circle cx="${x(i)}" cy="${y(s.cum[i])}" r="4" fill="${COLORS[k]}" stroke="var(--bg)" stroke-width="2"/>`).join("");
+    const rows = D.series.map((s, k) => ({ s, k, v: s.cum[i] })).sort((a, b) => b.v - a.v);
+    tip.innerHTML = `<header>${fmtHour(D.hours[i])}まで</header><ol>${rows.map(r =>
+      `<li><i style="background:${COLORS[r.k]}"></i><span>${esc(r.s.artist)}</span><b>${r.v}</b></li>`).join("")}</ol>`;
+    tip.hidden = false;
+    const bw = box.clientWidth, tx = x(i) / W * bw;
+    tip.style.left = (tx + 14 + tip.offsetWidth > bw ? tx - 14 - tip.offsetWidth : tx + 14) + "px";
+  };
+  const hide = () => { hover.setAttribute("visibility", "hidden"); tip.hidden = true; };
+  hit.addEventListener("pointermove", show);
+  hit.addEventListener("pointerdown", show);
+  hit.addEventListener("pointerleave", hide);
+}
+drawChart();
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawChart, 120); });
+
+// ---- table ----
+$("table").innerHTML =
+  `<thead><tr><th>順位</th><th class="name">曲</th>${D.days.map(d => `<th>${d}</th>`).join("")}<th>合計</th></tr></thead><tbody>` +
+  D.table.map((r, i) => `<tr><td>${r.rank}</td><td class="name">${i < D.series.length ? `<span class="sw" style="background:${COLORS[i]}"></span>` : ""}${esc(r.song)}<small>${esc(r.artist)}</small></td>${
+    r.days.map(v => `<td>${v || "–"}</td>`).join("")}<td class="total">${r.total}</td></tr>`).join("") + "</tbody>";
+</script>

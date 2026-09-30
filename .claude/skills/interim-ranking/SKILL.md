@@ -33,6 +33,7 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
    - 集計対象の時間範囲（JST）と件数、無効の内訳
    - 表記ゆれで票が割れている曲（出力末尾の「表記ゆれ候補」）
 4. **TOP5ポスト文**: 依頼されたら作って `pbcopy` でコピーする
+5. **推移ページ**: 依頼されたら `python3 tools/trend.py` で `data/trend.html` を作り直し、Artifact ツールで `url: https://claude.ai/artifact/DUqePtQD2g9RJPfxhugQf2` を指定して同じURLに再公開する（上位8曲の累計推移＋日別票数の表。厳密モード）
 
 ## ルール（`tools/tally.py` に実装済み）
 
