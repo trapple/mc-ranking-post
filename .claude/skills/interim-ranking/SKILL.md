@@ -12,14 +12,20 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
 | パス | 中身 |
 |---|---|
 | `data/config.json` | テーマ告知時刻（JST）、締切、プレイリストID |
+| `data/urls/yahoo.txt` | Yahoo!リアルタイム検索で集めたポストURL（追記のみ） |
 | `data/urls/<JST開始>_<JST終了>.txt` | Grok で集めたポストURL（12時間ごと）。区間の終わりから6時間以上たったものは確定扱いで再検索しない |
 | `data/posts.json` | ポストID → 本文・投稿者・時刻のキャッシュ。取得済みは再取得しない |
 | `data/rankings/<JST時刻>.txt` | 集計結果の履歴 |
 
 ## 手順
 
-1. **URL収集**: `python3 tools/collect.py` を Bash の `run_in_background: true` で実行する（Grok を区間ごとに最大6並列、1区間最大20分）。完了通知を待つ
-   - 確定区間はスキップされるので、2回目以降は直近の区間だけが走る
+1. **URL収集**（主: Yahoo!リアルタイム検索、補助: Grok）
+   - `python3 tools/collect_yahoo.py` を実行する。新しい順に40件ずつさかのぼり、既知のポストだけのページが続いたら止まる（差分取得）。2秒間隔
+     - 初回や取りこぼしが疑われるときは `--full` でテーマ告知時刻までさかのぼる
+     - Yahoo!の公式APIではない（ページ内部の仕組み）ので、必要なときだけ実行し間隔を詰めない
+   - 補助として `python3 tools/collect.py`（Grok、12時間区間ごと）を Bash の `run_in_background: true` で実行してもよい。1区間最大20分
+     - 確定区間はスキップされるので、2回目以降は直近の区間だけが走る
+     - `FAILED` が出た区間はファイルを作らないので、次回また検索される。`402 Payment Required` / `usage balance exhausted` は Grok Build の利用枠切れ → Yahoo!分だけで進める
 2. **集計**: `python3 tools/tally.py` を実行する（新しいポストだけ fxtwitter で取得。1件0.3秒）
    - 既定は厳密モード。`MODE=lenient` で「( )・『 』が複数あっても最初を採用」する寛容モード
    - 両方実行して、差（主に YouTube 共有タイトルの `(Official Music Video)` 由来）をユーザーに伝える
@@ -44,4 +50,4 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
 
 ## 限界
 
-Grok の X 検索は1回10件までで、網羅はできない。数字は下限の目安として扱う。
+Yahoo!リアルタイム検索は似たポストをまとめたり古いポストを落としたりすることがあり、Grok の X 検索も1回10件まで。網羅はできないので、数字は下限の目安として扱う。
