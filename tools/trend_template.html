@@ -134,10 +134,10 @@ function drawChart() {
     lines += `<path d="${d}" fill="none" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round"/>`;
     lines += `<path d="${d}" fill="none" stroke="${COLORS[i]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
   });
-  // 右端ラベル（上位3曲、重なりを避けて縦にずらす）
+  // 右端ラベル（上位5曲、重なりを避けて縦にずらす）
   let labels = "";
   if (m.r > 100) {
-    const ends = D.series.slice(0, 3).map((s, i) => ({ i, v: s.cum.at(-1), y: y(s.cum.at(-1)), t: s.artist }));
+    const ends = D.series.slice(0, 5).map((s, i) => ({ i, v: s.cum.at(-1), y: y(s.cum.at(-1)), t: s.artist }));
     ends.sort((a, b) => a.y - b.y);
     for (let k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 15) ends[k].y = ends[k - 1].y + 15;
     ends.forEach(e => {
