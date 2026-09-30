@@ -1,5 +1,5 @@
 """暫定票数の推移ページ（HTML）を生成する。tally.py と同じルール（厳密モード）で数える。
-usage: python3 tools/trend.py [--top N]  -> public/trend.html, public/trend-og.png（と Artifact 用の data/trend.html）"""
+usage: python3 tools/trend.py [--top N]  -> public/trend.html, public/trend-og.png"""
 import collections, html, itertools, json, os, subprocess, sys, tempfile
 from datetime import timedelta
 from pathlib import Path
@@ -56,8 +56,6 @@ def main():
         "deadline": tally.DEADLINE.strftime("%-m/%-d %H:%M"),
     }
     page = fill("trend_template.html", data)
-    out = ROOT / "data/trend.html"  # Artifact 用（スケルトンは公開時に付く）
-    out.write_text(page)
     site = tally.CFG["site_url"].rstrip("/")
     theme = html.escape(data["theme"])
     head = ('<!doctype html>\n<html lang="ja">\n<meta charset="utf-8">\n'
@@ -72,7 +70,7 @@ def main():
     back = f'<p style="text-align:center;font-size:13px;padding-bottom:32px"><a href="{site}/" style="color:var(--accent)">投票文をかんたん作成 →</a></p>\n'
     (ROOT / "public/trend.html").write_text(head + page + back + "</html>\n")
     render_og(data)
-    print(f"wrote {out} and public/trend.html (as of {data['asOf']} JST, {len(votes)} votes, top {len(top)})")
+    print(f"wrote public/trend.html (as of {data['asOf']} JST, {len(votes)} votes, top {len(top)})")
 
 
 def render_og(data):

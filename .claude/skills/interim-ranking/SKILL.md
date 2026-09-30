@@ -36,7 +36,7 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
    - 集計対象の時間範囲（JST）と件数、無効の内訳
    - 表記ゆれで票が割れている曲（出力末尾の「表記ゆれ候補」）
 4. **TOP5ポスト文**: 依頼されたら作って `pbcopy` でコピーする
-5. **推移ページ**: 2時間ごとに GitHub Actions が自動更新・公開している。すぐ更新したいときは `gh workflow run update -R trapple/mc-ranking-post`。ローカルで作るなら `python3 tools/trend.py` → `npx wrangler deploy`。Artifact 版（`https://claude.ai/artifact/DUqePtQD2g9RJPfxhugQf2`）も使うなら同じ url で再公開する
+5. **推移ページ**: 2時間ごとに GitHub Actions が自動更新・公開している。すぐ更新したいときは `gh workflow run update -R trapple/mc-ranking-post`。ローカルで作るなら `python3 tools/trend.py` → `npx wrangler deploy`
 
 ## ルール（`tools/tally.py` に実装済み）
 
