@@ -3,13 +3,13 @@ usage: python3 tools/collect_yahoo.py [--full] [--max-pages N]
   既定: 既知のポストだけのページが2回続いたら停止（差分取得）
   --full: テーマ告知時刻までさかのぼる"""
 import json, re, sys, time, urllib.parse, urllib.request
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 from pathlib import Path
 
-JST = timezone(timedelta(hours=9))
-ROOT = Path(__file__).resolve().parent.parent
-CFG = json.loads((ROOT / "data/config.json").read_text())
-START = datetime.fromisoformat(CFG["theme_start_jst"]).timestamp()
+sys.path.insert(0, str(Path(__file__).parent))
+from tally import JST, ROOT, START, load_store  # noqa: E402
+
+START = START.timestamp()
 OUT = ROOT / "data/urls/yahoo.txt"
 QUERY = "#VTuber楽曲ランキング #ミューコミVR"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140 Safari/537.36"
@@ -32,9 +32,8 @@ def next_page(oldest_id):
 def main():
     full = "--full" in sys.argv
     max_pages = int(sys.argv[sys.argv.index("--max-pages") + 1]) if "--max-pages" in sys.argv else 200
-    known = set(re.findall(r"status/(\d+)", OUT.read_text())) if OUT.exists() else set()
-    store = ROOT / "data/votes.json"
-    if store.exists(): known |= set(json.loads(store.read_text()))  # 取得済みID（CIではこちらが既知集合になる）
+    old = set(re.findall(r"status/(\d+)", OUT.read_text())) if OUT.exists() else set()
+    known = old | set(load_store())  # 取得済みID（CIでは votes.json が既知集合になる）
     found, known_streak = set(), 0
     tl = first_page()
     print(f"yahoo: totalResultsAvailable={tl['head'].get('totalResultsAvailable')}")
@@ -55,7 +54,6 @@ def main():
         except Exception as e:
             print(f"stop: {e}"); break
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    old = set(re.findall(r"status/(\d+)", OUT.read_text())) if OUT.exists() else set()
     OUT.write_text("\n".join(f"https://x.com/i/status/{i}" for i in sorted(old | found)) + "\n")
     print(f"new posts: {len(found - known)}")
 

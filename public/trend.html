@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="VTuber楽曲ランキング「歌始まり！！」の公開ポスト票を公式ルールで数えた非公式集計。上位曲の票数推移と日別票数。">
 <meta property="og:title" content="「歌始まり！！」票数の推移（非公式）">
-<meta property="og:image" content="https://mc-ranking-utahajimari.trapplejp.workers.dev/trend-og.png?v=9302128">
+<meta property="og:image" content="https://mc-ranking-utahajimari.trapplejp.workers.dev/trend-og.png?v=09302128">
 <meta property="og:url" content="https://mc-ranking-utahajimari.trapplejp.workers.dev/trend">
 <meta property="og:type" content="website">
 <meta property="og:description" content="9/30 21:28時点・公開ポストのみの勝手に集計。上位曲の票数推移と日別票数。">
@@ -141,11 +141,12 @@ function drawChart() {
     }
   });
   let lines = "";
-  [...D.series].map((s, i) => [s, i]).reverse().forEach(([s, i]) => {
+  for (let i = D.series.length - 1; i >= 0; i--) {  // 上位を最前面に描く
+    const s = D.series[i];
     const d = s.cum.map((v, j) => `${j ? "L" : "M"}${x(j).toFixed(1)},${y(v).toFixed(1)}`).join("");
     lines += `<path d="${d}" fill="none" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round"/>`;
     lines += `<path d="${d}" fill="none" stroke="${COLORS[i]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
-  });
+  }
   // 右端ラベル（上位5曲、重なりを避けて縦にずらす）
   let labels = "";
   if (m.r > 100) {
@@ -162,14 +163,17 @@ function drawChart() {
     <rect x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent" id="hit"/></svg>
     <div class="tip" id="tip" hidden></div>`;
 
-  const hit = $("hit"), tip = $("tip"), hover = $("hover");
+  const hit = $("hit"), tip = $("tip"), hover = $("hover"), hline = $("hline"), hdots = $("hdots");
+  let lastI = -1;
   const show = ev => {
     const r = hit.getBoundingClientRect();
     const px = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left) / r.width;
     const i = Math.max(0, Math.min(n - 1, Math.round(px * (n - 1))));
+    if (i === lastI) return;
+    lastI = i;
     hover.setAttribute("visibility", "visible");
-    $("hline").setAttribute("x1", x(i)); $("hline").setAttribute("x2", x(i));
-    $("hdots").innerHTML = D.series.map((s, k) =>
+    hline.setAttribute("x1", x(i)); hline.setAttribute("x2", x(i));
+    hdots.innerHTML = D.series.map((s, k) =>
       `<circle cx="${x(i)}" cy="${y(s.cum[i])}" r="4" fill="${COLORS[k]}" stroke="var(--bg)" stroke-width="2"/>`).join("");
     const rows = D.series.map((s, k) => ({ s, k, v: s.cum[i] })).sort((a, b) => b.v - a.v);
     tip.innerHTML = `<header>${fmtHour(D.hours[i])}まで</header><ol>${rows.map(r =>
@@ -178,7 +182,7 @@ function drawChart() {
     const bw = box.clientWidth, tx = x(i) / W * bw;
     tip.style.left = (tx + 14 + tip.offsetWidth > bw ? tx - 14 - tip.offsetWidth : tx + 14) + "px";
   };
-  const hide = () => { hover.setAttribute("visibility", "hidden"); tip.hidden = true; };
+  const hide = () => { lastI = -1; hover.setAttribute("visibility", "hidden"); tip.hidden = true; };
   hit.addEventListener("pointermove", show);
   hit.addEventListener("pointerdown", show);
   hit.addEventListener("pointerleave", hide);

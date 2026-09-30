@@ -200,11 +200,11 @@ footer a{color:var(--pink-d)}
   const cd = $("countdown");
   function tick(){
     const ms = DEADLINE - Date.now();
-    if (ms <= 0){ cd.classList.add("closed"); cd.textContent = "投票は締め切りました。結果発表は11月1日（日）放送内で！"; return; }
+    if (ms <= 0){ clearInterval(timer); cd.classList.add("closed"); cd.textContent = "投票は締め切りました。結果発表は11月1日（日）放送内で！"; return; }
     const d = Math.floor(ms/864e5), h = Math.floor(ms/36e5)%24, m = Math.floor(ms/6e4)%60, s = Math.floor(ms/1e3)%60;
     cd.innerHTML = `締切まであと <span class="num">${d}</span>日 <span class="num">${h}</span>時間 <span class="num">${String(m).padStart(2,"0")}</span>分 <span class="num">${String(s).padStart(2,"0")}</span>秒`;
   }
-  tick(); setInterval(tick, 1000);
+  const timer = setInterval(tick, 1000); tick();
 
   // ---- validation ----
   const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -268,10 +268,10 @@ footer a{color:var(--pink-d)}
     const bx = $("btn-x");
     bx.setAttribute("aria-disabled", String(!ok));
     bx.href = ok ? "https://x.com/intent/tweet?text=" + encodeURIComponent(text) : "#";
-    $("btn-copy").setAttribute("aria-disabled", String(!ok));
-    $("btn-link").setAttribute("aria-disabled", String(!ok));
-    $("btn-link").dataset.text = ok ? bx.href : "";
-    $("btn-copy").dataset.text = ok ? text : "";
+    for (const [id, v] of [["btn-copy", text], ["btn-link", bx.href]]) {
+      $(id).setAttribute("aria-disabled", String(!ok));
+      $(id).dataset.text = ok ? v : "";
+    }
     store.set("draft", JSON.stringify({a:artist.value, s:song.value, c:comment.value, v:video.value}));
   }
 
@@ -289,18 +289,14 @@ footer a{color:var(--pink-d)}
       document.body.appendChild(ta); ta.select(); let r=false; try { r = document.execCommand("copy"); } catch {} ta.remove(); return r;
     }
   }
-  $("btn-copy").addEventListener("click", async e => {
-    const t = e.currentTarget.dataset.text;
-    if (!t) return;
-    const r = await copy(t);
-    show(r ? "コピーしました！" : "コピーできませんでした。プレビューを長押しでコピーしてください");
-  });
-  $("btn-link").addEventListener("click", async e => {
-    const t = e.currentTarget.dataset.text;
-    if (!t) return;
-    const r = await copy(t);
-    show(r ? "リンクをコピーしました！X上に貼っておこう" : "コピーできませんでした");
-  });
+  function bindCopy(id, okMsg, ngMsg){
+    $(id).addEventListener("click", async e => {
+      const t = e.currentTarget.dataset.text;
+      if (t) show(await copy(t) ? okMsg : ngMsg);
+    });
+  }
+  bindCopy("btn-copy", "コピーしました！", "コピーできませんでした。プレビューを長押しでコピーしてください");
+  bindCopy("btn-link", "リンクをコピーしました！X上に貼っておこう", "コピーできませんでした");
   $("btn-x").addEventListener("click", e => {
     if (e.currentTarget.getAttribute("aria-disabled")==="true"){ e.preventDefault(); return; }
     markToday("post");

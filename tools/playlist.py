@@ -79,13 +79,15 @@ def songs_from_posts():
 def cmd_plan():
     songs, g = load(SONGS, {}), songs_from_posts()
     items = playlist_items(yt())
+    for i in items:  # 比較用に一度だけ正規化
+        i["nt"], i["ntc"] = tally.norm(i["title"]), tally.norm(i["title"] + i["channel"])
     plan = {}
     for k, e in sorted(g.items(), key=lambda kv: -kv[1]["votes"]):
         if k in songs: continue
         a, s = e["names"].most_common(1)[0][0]
         ns = tally.norm(s)
-        hit = [i for i in items if ns and ns in tally.norm(i["title"])
-               and (tally.norm(a) in tally.norm(i["title"] + i["channel"]) or len(ns) >= 4)]
+        na = tally.norm(a)
+        hit = [i for i in items if ns and ns in i["nt"] and (na in i["ntc"] or len(ns) >= 4)]
         if hit:  # 既にプレイリストにある（手動追加分など）
             songs[k] = {"artist": a, "song": s, "status": "added", "video_id": hit[0]["vid"]}
             print(f"[matched] ({a})『{s}』 {e['votes']}票 -> {hit[0]['vid']} {hit[0]['title']}")
@@ -129,8 +131,10 @@ def cmd_sync(limit=200):
             if n >= limit: break
             y.playlistItems().insert(part="snippet", body={"snippet": {"playlistId": PL, "resourceId": {"kind": "youtube#video", "videoId": e["video_id"]}}}).execute()
             have.add(e["video_id"]); n += 1; print("added", e["video_id"], e["artist"], e["song"])
+            e["status"] = "added"
+            save(SONGS, songs)  # API 上限で途中停止しても進捗を残す
         e["status"] = "added"
-        save(SONGS, songs)
+    save(SONGS, songs)
     print(f"added {n}; playlist now {len(have)}")
 
 def cmd_move(vid, pos):
@@ -143,11 +147,10 @@ def cmd_list():
     for n, i in enumerate(playlist_items(yt())): print(n, i["vid"], i["title"])
 
 if __name__ == "__main__":
-    c, args = sys.argv[1], sys.argv[2:]
-    if c == "plan": cmd_plan()
-    elif c == "accept-auto": cmd_accept_auto()
-    elif c == "set": cmd_set(*args)
-    elif c == "sync": cmd_sync(int(args[args.index("--limit") + 1]) if "--limit" in args else 200)
-    elif c == "move": cmd_move(*args)
-    elif c == "list": cmd_list()
-    else: sys.exit(__doc__)
+    c, args = (sys.argv[1] if len(sys.argv) > 1 else ""), sys.argv[2:]
+    commands = {
+        "plan": cmd_plan, "accept-auto": cmd_accept_auto, "set": lambda: cmd_set(*args),
+        "sync": lambda: cmd_sync(int(args[args.index("--limit") + 1]) if "--limit" in args else 200),
+        "move": lambda: cmd_move(*args), "list": cmd_list,
+    }
+    commands.get(c, lambda: sys.exit(__doc__))()

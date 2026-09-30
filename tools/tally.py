@@ -1,7 +1,8 @@
 """投票ポストを公式ルールで集計する。新しいポストだけ fxtwitter で取得し、
 集計に必要な最小限（本文・アカウント名なし）を data/votes.json にためる。
-usage: [MODE=strict|lenient] python3 tools/tally.py"""
-import collections, hashlib, hmac, itertools, json, os, re, secrets, sys, time, unicodedata, urllib.error, urllib.request
+usage: [MODE=strict|lenient] python3 tools/tally.py
+       python3 tools/tally.py --active   # 投票期間（締切+6時間まで）なら true を出力"""
+import collections, functools, hashlib, hmac, itertools, json, os, re, secrets, sys, time, unicodedata, urllib.error, urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -15,6 +16,7 @@ MODE = os.environ.get("MODE", "strict")
 YT_RE = re.compile(r"(?:youtu\.be/|[?&]v=|shorts/)([\w-]{11})")
 
 
+@functools.cache
 def salt():
     s = os.environ.get("MC_SALT")
     if s: return s.encode()
@@ -61,6 +63,7 @@ def record(text, user, ts):
 
 
 def fetch(pid):
+    """集計用レコード / {"code": 404} / 一時エラー時は {"code": None}（次回再取得）"""
     for _ in range(3):
         try:
             req = urllib.request.Request(f"https://api.fxtwitter.com/i/status/{pid}", headers={"User-Agent": "mc-ranking-tally"})
@@ -73,16 +76,15 @@ def fetch(pid):
         except Exception:
             pass
         time.sleep(2)
-    return None  # 一時エラー: 保存せず次回再取得
+    return {"code": None}
 
 
 def update_store(store, ids):
-    new = sorted(i for i in ids if i not in store)
+    new = sorted(i for i in ids | set(store) if store.get(i, {}).get("code") is None)  # 未取得 + 前回一時エラー
     print(f"fetching {len(new)} new post(s)", file=sys.stderr)
     for n, pid in enumerate(new, 1):
-        r = fetch(pid)
-        if r: store[pid] = r
-        if n % 50 == 0:
+        store[pid] = fetch(pid)
+        if n % 200 == 0:
             save_store(store); print(f"  {n}/{len(new)}", file=sys.stderr)
         time.sleep(0.3)
     save_store(store)
@@ -117,7 +119,28 @@ def counted_votes(store, strict):
     return out, invalid
 
 
+def variant_candidates(tally):
+    """表記ゆれ候補: 曲名が同じでアーティスト名が包含関係、またはアーティスト名が同じで曲名が包含関係"""
+    items = [((a, s), c, norm(a), norm(s)) for (a, s), c in tally.most_common()]
+    by_song, by_artist = collections.defaultdict(list), collections.defaultdict(list)
+    for it in items:
+        by_song[it[3]].append(it); by_artist[it[2]].append(it)
+    pairs = set()
+    for group in by_song.values():
+        pairs |= {(x[0], y[0]) for x, y in itertools.combinations(group, 2) if x[2] in y[2] or y[2] in x[2]}
+    for group in by_artist.values():
+        pairs |= {(x[0], y[0]) for x, y in itertools.combinations(group, 2) if x[3] in y[3] or y[3] in x[3]}
+    return [f"({a1})『{s1}』{tally[(a1, s1)]}  <->  ({a2})『{s2}』{tally[(a2, s2)]}"
+            for (a1, s1), (a2, s2) in sorted(pairs, key=lambda p: (-tally[p[0]], -tally[p[1]]))]
+
+
+def active(now=None):
+    return (now or datetime.now(JST)) <= DEADLINE + timedelta(hours=6)
+
+
 def main():
+    if "--active" in sys.argv:
+        print("true" if active() else "false"); return
     store = load_store()
     update_store(store, load_ids())
     votes, invalid = counted_votes(store, MODE == "strict")
@@ -129,14 +152,12 @@ def main():
         if n != prev: rank, prev = i, n
         lines.append(f"{rank}\t{n}\t({a})\t『{s}』")
     lines.append("\n## 表記ゆれ候補")
-    for ((a1, s1), c1), ((a2, s2), c2) in itertools.combinations(tally.most_common(), 2):
-        na1, na2, ns1, ns2 = norm(a1), norm(a2), norm(s1), norm(s2)
-        if (ns1 == ns2 and (na1 in na2 or na2 in na1)) or (na1 == na2 and (ns1 in ns2 or ns2 in ns1)):
-            lines.append(f"({a1})『{s1}』{c1}  <->  ({a2})『{s2}』{c2}")
+    lines += variant_candidates(tally)
     out = "\n".join(lines)
     print(out)
-    d = ROOT / "data/rankings"; d.mkdir(exist_ok=True)
-    (d / f"{datetime.now(JST):%Y%m%d-%H%M}_{MODE}.txt").write_text(out + "\n")
+    if not os.environ.get("CI"):  # 履歴はローカルのみ（CI では捨てられる）
+        d = ROOT / "data/rankings"; d.mkdir(exist_ok=True)
+        (d / f"{datetime.now(JST):%Y%m%d-%H%M}_{MODE}.txt").write_text(out + "\n")
 
 
 if __name__ == "__main__":
