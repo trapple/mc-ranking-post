@@ -108,6 +108,9 @@ def cmd_accept_auto():
 
 def cmd_set(k, status, *rest):
     songs, plan = load(SONGS, {}), load(PLAN, {})
+    if k not in songs and k not in plan:
+        near = [x for x in list(plan) + list(songs) if k.split("|")[-1] in x]
+        sys.exit(f"unknown key: {k}  (候補: {near[:5]})")
     base = songs.get(k) or {x: plan.get(k, {}).get(x) for x in ("artist", "song")}
     e = {"artist": base.get("artist"), "song": base.get("song"), "status": status}
     if status == "video": e["video_id"] = rest[0]
