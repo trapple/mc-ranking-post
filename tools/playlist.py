@@ -67,13 +67,13 @@ def search(q):
 
 def songs_from_posts():
     """寛容モードの有効票から曲ごとに (表示名, 票数, ポスト内のYouTube ID) を集める"""
-    cache, ids = load(tally.CACHE, {}), tally.load_ids()
-    votes, _ = tally.counted_votes(cache, [i for i in ids if i in cache], strict=False)
+    store = tally.load_store()
+    votes, _ = tally.counted_votes(store, strict=False)
     g = collections.defaultdict(lambda: {"names": collections.Counter(), "votes": 0, "vids": collections.Counter()})
     for v in votes:
         e = g[key(v["artist"], v["song"])]
         e["names"][(v["artist"], v["song"])] += 1; e["votes"] += 1
-        for vid in re.findall(r"(?:youtu\.be/|[?&]v=|shorts/)([\w-]{11})", cache[v["id"]]["text"]): e["vids"][vid] += 1
+        for vid in store[v["id"]].get("yt", []): e["vids"][vid] += 1
     return g
 
 def cmd_plan():

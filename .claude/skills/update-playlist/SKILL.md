@@ -9,7 +9,7 @@ description: Add newly voted songs from the VTuber楽曲ランキング public X
 
 ## 前提
 
-- 先に `interim-ranking` の手順1〜2（URL収集と `tools/tally.py`）を実行して `data/posts.json` を最新にしておく
+- 先に `git pull` で `data/votes.json` を最新にする（GitHub Actions が2時間ごとに更新している）。直近まで欲しければ `interim-ranking` の手順1〜2も実行する
 - YouTube の OAuth クライアント JSON: 環境変数 `YT_CLIENT_SECRET`、なければ `~/Downloads/client_secret_*.json`
 - トークン: `~/.config/mc-ranking/yt-token.json`（リポジトリ外。期限切れ時はブラウザ認証が開く → ユーザーに許可を頼む）
 - Python 依存は `uv run` が自動で入れる

@@ -32,16 +32,18 @@ def next_page(oldest_id):
 def main():
     full = "--full" in sys.argv
     max_pages = int(sys.argv[sys.argv.index("--max-pages") + 1]) if "--max-pages" in sys.argv else 200
-    known = set(OUT.read_text().split()) if OUT.exists() else set()
+    known = set(re.findall(r"status/(\d+)", OUT.read_text())) if OUT.exists() else set()
+    store = ROOT / "data/votes.json"
+    if store.exists(): known |= set(json.loads(store.read_text()))  # 取得済みID（CIではこちらが既知集合になる）
     found, known_streak = set(), 0
     tl = first_page()
     print(f"yahoo: totalResultsAvailable={tl['head'].get('totalResultsAvailable')}")
     for page in range(1, max_pages + 1):
         es = tl.get("entry") or []
         if not es: print("no more entries"); break
-        urls = {f"https://x.com/{e['screenName']}/status/{e['id']}" for e in es if e.get("id") and e.get("screenName")}
-        new = urls - known - found
-        found |= urls
+        page_ids = {e["id"] for e in es if e.get("id")}
+        new = page_ids - known - found
+        found |= page_ids
         oldest = min(es, key=lambda e: e["createdAt"])
         print(f"page {page}: {len(es)} posts, {len(new)} new, oldest {datetime.fromtimestamp(oldest['createdAt'], JST):%m/%d %H:%M} JST", flush=True)
         if oldest["createdAt"] < START: print("reached theme start"); break
@@ -53,8 +55,9 @@ def main():
         except Exception as e:
             print(f"stop: {e}"); break
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text("\n".join(sorted(known | found)) + "\n")
-    print(f"yahoo.txt: +{len(found - known)} (total {len(known | found)})")
+    old = set(re.findall(r"status/(\d+)", OUT.read_text())) if OUT.exists() else set()
+    OUT.write_text("\n".join(f"https://x.com/i/status/{i}" for i in sorted(old | found)) + "\n")
+    print(f"new posts: {len(found - known)}")
 
 if __name__ == "__main__":
     main()

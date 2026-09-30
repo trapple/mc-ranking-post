@@ -12,10 +12,13 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
 | パス | 中身 |
 |---|---|
 | `data/config.json` | テーマ告知時刻（JST）、締切、プレイリストID |
-| `data/urls/yahoo.txt` | Yahoo!リアルタイム検索で集めたポストURL（追記のみ） |
-| `data/urls/<JST開始>_<JST終了>.txt` | Grok で集めたポストURL（12時間ごと）。区間の終わりから6時間以上たったものは確定扱いで再検索しない |
-| `data/posts.json` | ポストID → 本文・投稿者・時刻のキャッシュ。取得済みは再取得しない |
-| `data/rankings/<JST時刻>.txt` | 集計結果の履歴 |
+| `data/votes.json` | ポストIDごとの集計用データ（本文・アカウント名は持たない。形式は README 参照）。取得済みは再取得しない。**GitHub Actions が2時間ごとに更新してコミットする** |
+| `data/urls/yahoo.txt` | Yahoo!で集めたポストURL（一時ファイル・コミットしない） |
+| `data/urls/<JST開始>_<JST終了>.txt` | Grok で集めたポストURL（一時ファイル）。区間の終わりから6時間以上たったものは確定扱いで再検索しない |
+| `data/rankings/<JST時刻>.txt` | 集計結果の履歴（ローカルのみ） |
+
+**始める前に `git pull` する**（Actions が `data/votes.json` と `public/trend*` を更新しているため）。
+アカウント名のハッシュ鍵は `~/.config/mc-ranking/salt`（CI の Secret `MC_SALT` と同じ値）。
 
 ## 手順
 
@@ -33,7 +36,7 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
    - 集計対象の時間範囲（JST）と件数、無効の内訳
    - 表記ゆれで票が割れている曲（出力末尾の「表記ゆれ候補」）
 4. **TOP5ポスト文**: 依頼されたら作って `pbcopy` でコピーする
-5. **推移ページ**: 依頼されたら `python3 tools/trend.py` を実行（`data/trend.html` と `public/trend.html` を生成）し、`npx wrangler deploy` で `<site_url>/trend` に公開する。Artifact 版（`https://claude.ai/artifact/DUqePtQD2g9RJPfxhugQf2`）も使うなら同じ url で再公開する
+5. **推移ページ**: 2時間ごとに GitHub Actions が自動更新・公開している。すぐ更新したいときは `gh workflow run update -R trapple/mc-ranking-post`。ローカルで作るなら `python3 tools/trend.py` → `npx wrangler deploy`。Artifact 版（`https://claude.ai/artifact/DUqePtQD2g9RJPfxhugQf2`）も使うなら同じ url で再公開する
 
 ## ルール（`tools/tally.py` に実装済み）
 

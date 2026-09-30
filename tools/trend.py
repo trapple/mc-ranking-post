@@ -1,6 +1,6 @@
 """暫定票数の推移ページ（HTML）を生成する。tally.py と同じルール（厳密モード）で数える。
 usage: python3 tools/trend.py [--top N]  -> data/trend.html"""
-import collections, json, subprocess, sys, tempfile
+import collections, json, os, subprocess, sys, tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -13,9 +13,7 @@ TABLE_ROWS = 20
 
 
 def main():
-    cache = json.loads(tally.CACHE.read_text())
-    ids = [i for i in tally.load_ids() if i in cache]
-    votes, _ = tally.counted_votes(cache, ids, strict=True)
+    votes, _ = tally.counted_votes(tally.load_store(), strict=True)
     if not votes: sys.exit("no votes")
     total = collections.Counter((v["artist"], v["song"]) for v in votes)
     ranked = [k for k, _ in total.most_common()]
@@ -78,7 +76,7 @@ def main():
     print(f"wrote {out} and public/trend.html (as of {data['asOf']} JST, {len(votes)} votes, top {len(top)})")
 
 
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+CHROME = os.environ.get("CHROME", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
 
 
 def render_og(data):

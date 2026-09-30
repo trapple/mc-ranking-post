@@ -1,0 +1,72 @@
+name: update
+on:
+  schedule:
+    - cron: "0 */2 * * *"   # UTC 偶数時 = JST 奇数時（開始は数分〜十数分遅れることがある）
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check voting period
+        id: period
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from datetime import datetime, timedelta, timezone
+          cfg = json.load(open("data/config.json"))
+          end = datetime.fromisoformat(cfg["deadline_jst"]) + timedelta(hours=6)
+          print("active=" + ("true" if datetime.now(timezone.utc) <= end else "false"))
+          PY
+
+      - uses: actions/setup-python@v5
+        if: steps.period.outputs.active == 'true'
+        with: { python-version: "3.12" }
+
+      - name: Collect new posts (Yahoo! realtime search)
+        if: steps.period.outputs.active == 'true'
+        run: timeout 600 python3 tools/collect_yahoo.py
+
+      - name: Fetch and tally
+        if: steps.period.outputs.active == 'true'
+        env:
+          MC_SALT: ${{ secrets.MC_SALT }}
+        run: timeout 1200 python3 tools/tally.py > tally.txt && head -12 tally.txt
+
+      - name: Build trend page
+        if: steps.period.outputs.active == 'true'
+        env:
+          CHROME: google-chrome
+        run: timeout 180 python3 tools/trend.py
+
+      - name: Commit data
+        id: commit
+        if: steps.period.outputs.active == 'true'
+        run: |
+          git add data/votes.json public/trend.html public/trend-og.png
+          if git diff --cached --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "chore: 投票データと推移ページを自動更新"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        if: steps.commit.outputs.changed == 'true'
+        with: { node-version: "22" }
+
+      - name: Deploy to Cloudflare
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: timeout 300 npx --yes wrangler@4 deploy
