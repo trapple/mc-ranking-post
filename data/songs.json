@@ -704,5 +704,35 @@
   "song": "another",
   "status": "added",
   "video_id": "0POua9yZ_tA"
+ },
+ "20261001062046|僕とあなたと": {
+  "artist": "2026/10/01 06:20:46",
+  "song": "僕とあなたと",
+  "status": "skip",
+  "reason": "日時カッコによる集計崩れ"
+ },
+ "ibuki|leakage": {
+  "artist": "Ibuki",
+  "song": "Leakage",
+  "status": "added",
+  "video_id": "f_mV4qfgIHA"
+ },
+ "鐘輝かう|crazyglory": {
+  "artist": "鐘輝かう",
+  "song": "CRAZY GLORY",
+  "status": "added",
+  "video_id": "qqLQ6JhF-UA"
+ },
+ "合法バツ子チャン|バツ子のgoho的ゆとぴあのス♡ス♡メ": {
+  "artist": "合法!!バツ子ﾁｬﾝ",
+  "song": "バツ子のGO!HO!的ゆ～とぴあのス♡ス♡メ",
+  "status": "added",
+  "video_id": "wAf6DoB-N0c"
+ },
+ "朝倉杏子|マジ恋ぷれりゅーど♡loveアンセム": {
+  "artist": "朝倉杏子",
+  "song": "マジ恋ぷれりゅーど♡LOVEアンセム",
+  "status": "added",
+  "video_id": "WITuyWb9xuA"
  }
 }
