@@ -18,6 +18,7 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
 | `data/rankings/<JST時刻>.txt` | 集計結果の履歴（ローカルのみ） |
 
 **始める前に `git pull` する**（Actions が `data/votes.json` と `public/trend*` を更新しているため）。
+**終わったら `git checkout -- data/votes.json`** で手元の追記を捨てる（次の Actions が同じポストを取り込むので失われない。残すと次の `git pull` が衝突する）。
 アカウント名のハッシュ鍵は `~/.config/mc-ranking/salt`（CI の Secret `MC_SALT` と同じ値）。
 
 ## 手順
