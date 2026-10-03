@@ -15,6 +15,7 @@
 | `tools/tally.py` | 新しいポストを fxtwitter で取得して `data/votes.json` に追記し、公式ルールで集計 |
 | `tools/trend.py` | 推移ページとシェア用画像を生成（headless Chrome） |
 | `tools/playlist.py` | 投票曲を YouTube プレイリストに反映（手動・要 OAuth） |
+| `tools/post_text.py` | X 用の暫定TOP5ポスト文を作る（`--copy` でクリップボードへ） |
 | `tools/lookup.py` | 特定アーティスト／曲／アカウントの投票ポストと集計への反映状況を調べる |
 | `data/votes.json` | 集計に必要な最小限のデータ（下記） |
 | `data/songs.json` | 曲キー → プレイリスト動画の対応 |

@@ -36,7 +36,7 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
 3. **報告**: 厳密モードの上位を表で示し、次も添える
    - 集計対象の時間範囲（JST）と件数、無効の内訳
    - 表記ゆれで票が割れている曲（出力末尾の「表記ゆれ候補」）
-4. **TOP5ポスト文**: 依頼されたら作って `pbcopy` でコピーする
+4. **TOP5ポスト文**: 依頼されたら `python3 tools/post_text.py --copy`（`daily-ranking-post` スキル）
 5. **推移ページ**: 2時間ごとに GitHub Actions が自動更新・公開している。すぐ更新したいときは `gh workflow run update -R trapple/mc-ranking-post`。ローカルで作るなら `python3 tools/trend.py` → `npx wrangler deploy`
 
 ## ルール（`tools/tally.py` に実装済み）
@@ -48,35 +48,7 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
 
 ## TOP5ポスト文
 
-冒頭の2行はこの形で固定（絵文字は付けない。時刻は集計範囲の最終ポスト時刻、JST）:
-
-```
-VTuber楽曲ランキング「歌始まり！！」暫定TOP5
-9/30 20:47時点・公開ポストのみの勝手に集計です
-
-🥇 wouca「Romantica」248票
-🥈 ...
-🥉 ...
-4位 ...
-5位 ...
-
-<ひとこと（接戦・差など）>
-DM票は含まれないので、実際の順位は変わる可能性があります
-
-📈 票数の推移はこちら
-<site_url>trend
-
-投票は10/27 23:59まで🗳️
-投票文かんたん作成👇
-<site_url>
-
-投票曲まとめプレイリスト🎧
-<playlist_url>
-```
-
-- 半角 `( )` と `『 』` を使わない（曲名は「 」、日付の曜日カッコも書かない）。投票として誤集計されるのを防ぐ
-- `#VTuber楽曲ランキング` `#ミューコミVR` は付けない
-- `site_url` / `playlist_url` は `data/config.json` から
+`daily-ranking-post` スキル（`python3 tools/post_text.py --copy`）で作る。文面の決まりはそちらを参照。
 
 ## 限界
 
