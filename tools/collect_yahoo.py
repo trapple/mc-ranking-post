@@ -1,6 +1,7 @@
 """Yahoo!リアルタイム検索から投票ポストURLを集める（新しい順に40件ずつさかのぼる）。
 usage: python3 tools/collect_yahoo.py [--full] [--max-pages N]
-  既定: 既知のポストだけのページが2回続いたら停止（差分取得）
+  既定: 直近 LOOKBACK（24時間）より前まで来て、既知のポストだけのページが2回続いたら停止（差分取得）。
+        Yahoo!への反映は遅れることがあるので、通過済みの時間帯も直近24時間は毎回見直す
   --full: テーマ告知時刻までさかのぼる"""
 import json, re, sys, time, urllib.parse, urllib.request
 from datetime import datetime
@@ -14,6 +15,7 @@ OUT = ROOT / "data/urls/yahoo.txt"
 QUERY = "#VTuber楽曲ランキング #ミューコミVR"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140 Safari/537.36"
 INTERVAL = 2.0
+LOOKBACK = 24 * 3600  # 秒
 
 def get(url):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
@@ -47,7 +49,8 @@ def main():
         print(f"page {page}: {len(es)} posts, {len(new)} new, oldest {datetime.fromtimestamp(oldest['createdAt'], JST):%m/%d %H:%M} JST", flush=True)
         if oldest["createdAt"] < START: print("reached theme start"); break
         known_streak = known_streak + 1 if not new else 0
-        if not full and known_streak >= 2: print("caught up with known posts"); break
+        if not full and known_streak >= 2 and oldest["createdAt"] < time.time() - LOOKBACK:
+            print("caught up with known posts"); break
         time.sleep(INTERVAL)
         try:
             tl = next_page(oldest["id"])

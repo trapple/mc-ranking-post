@@ -24,7 +24,7 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
 ## 手順
 
 1. **URL収集**（主: Yahoo!リアルタイム検索、補助: Grok）
-   - `python3 tools/collect_yahoo.py` を実行する。新しい順に40件ずつさかのぼり、既知のポストだけのページが続いたら止まる（差分取得）。2秒間隔
+   - `python3 tools/collect_yahoo.py` を実行する。新しい順に40件ずつさかのぼり、直近24時間より前まで来て既知のポストだけのページが続いたら止まる（差分取得。反映が遅れたポストを拾うため直近24時間は毎回見直す）。2秒間隔
      - 初回や取りこぼしが疑われるときは `--full` でテーマ告知時刻までさかのぼる
      - Yahoo!の公式APIではない（ページ内部の仕組み）ので、必要なときだけ実行し間隔を詰めない
    - 補助として `python3 tools/collect.py`（Grok、12時間区間ごと）を Bash の `run_in_background: true` で実行してもよい。1区間最大20分
@@ -52,4 +52,4 @@ description: Tally the current (interim) VTuber楽曲ランキング standings f
 
 ## 限界
 
-Yahoo!リアルタイム検索は似たポストをまとめたり古いポストを落としたりすることがあり、Grok の X 検索も1回10件まで。網羅はできないので、数字は下限の目安として扱う。
+Yahoo!リアルタイム検索は似たポストをまとめたり、一部のポストをキーワード検索に出さなかったりする（投稿者指定 `ID:<user>` では見えるのにハッシュタグ検索には出ない例を確認済み）。また、Grok の X 検索も1回10件まで。網羅はできないので、数字は下限の目安として扱う。
