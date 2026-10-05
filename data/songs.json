@@ -734,5 +734,149 @@
   "song": "マジ恋ぷれりゅーど♡LOVEアンセム",
   "status": "added",
   "video_id": "WITuyWb9xuA"
+ },
+ "木|butterflydream": {
+  "artist": "木",
+  "song": "Butterfly Dream",
+  "status": "skip",
+  "reason": "曜日カッコによる集計崩れ"
+ },
+ "金|butterflydream": {
+  "artist": "金",
+  "song": "Butterfly Dream",
+  "status": "skip",
+  "reason": "曜日カッコによる集計崩れ"
+ },
+ "土|butterflydream": {
+  "artist": "土",
+  "song": "Butterfly Dream",
+  "status": "skip",
+  "reason": "曜日カッコによる集計崩れ"
+ },
+ "_*'ω'*|lasttear": {
+  "artist": "_*'ω'*",
+  "song": "Last Tear",
+  "status": "skip",
+  "reason": "顔文字カッコによる集計崩れ"
+ },
+ "́༎ຶོρ༎ຶོ`|僕とあなたと": {
+  "artist": "´༎ຶོρ༎ຶོ`",
+  "song": "僕とあなたと",
+  "status": "skip",
+  "reason": "顔文字カッコによる集計崩れ"
+ },
+ "%e6%b7%b1%e5%bd%b1|ロストメモリー": {
+  "artist": "%E6%B7%B1%E5%BD%B1",
+  "song": "ロストメモリー",
+  "status": "alias",
+  "alias_of": "深影|ロストメモリー"
+ },
+ "月|butterflydream": {
+  "artist": "月",
+  "song": "Butterfly Dream",
+  "status": "skip",
+  "reason": "曜日カッコによる集計崩れ"
+ },
+ "日|butterflydream": {
+  "artist": "日",
+  "song": "Butterfly Dream",
+  "status": "skip",
+  "reason": "曜日カッコによる集計崩れ"
+ },
+ "夜世生宵|私の特別な人生": {
+  "artist": "夜世生 宵",
+  "song": "私の特別な人生",
+  "status": "added",
+  "video_id": "cieIKssjfTU"
+ },
+ "空音まのん|ソラノヲト": {
+  "artist": "空音まのん",
+  "song": "ソラノヲト",
+  "status": "added",
+  "video_id": "BfIBxJm1k-8"
+ },
+ "エリオント|満開エリオント": {
+  "artist": "エリオント",
+  "song": "満開！エリオント",
+  "status": "added",
+  "video_id": "8vsN7iDDCTo"
+ },
+ "エリオント|happyreflection": {
+  "artist": "エリオント",
+  "song": "HAPPY REFLECTION",
+  "status": "added",
+  "video_id": "hlSBjKv053w"
+ },
+ "sooda|ワレワレは宇宙人だ": {
+  "artist": "Sooda",
+  "song": "ワレワレは宇宙人だ。",
+  "status": "added",
+  "video_id": "TFsQAv4zzEs"
+ },
+ "獅子神レオナ|id": {
+  "artist": "獅子神レオナ",
+  "song": "ID",
+  "status": "added",
+  "video_id": "Q5nrYzxASSk"
+ },
+ "和央パリン|kirakirahunter": {
+  "artist": "和央パリン",
+  "song": "KIRAKIRA HUNTER",
+  "status": "added",
+  "video_id": "45XRGqchCqg"
+ },
+ "tanz|紫陽花": {
+  "artist": "TanZ",
+  "song": "紫陽花",
+  "status": "added",
+  "video_id": "jKcwA2ODCrk"
+ },
+ "näo|デタラメランコリック": {
+  "artist": "NÄO",
+  "song": "デタラメランコリック",
+  "status": "added",
+  "video_id": "nAf0s5Fry9k"
+ },
+ "夢限大みゅーたいぷ|愛は衝動": {
+  "artist": "夢限大みゅーたいぷ",
+  "song": "愛は衝動",
+  "status": "added",
+  "video_id": "5NZp6NKhhlQ"
+ },
+ "夕月ティア|ゆうづつすーぱーはいぱーみらくるそんぐ": {
+  "artist": "夕月ティア",
+  "song": "ゆうづつすーぱーはいぱーみらくるそんぐ！",
+  "status": "added",
+  "video_id": "L5Ifq6DsNfY"
+ },
+ "国愛めみ|愛めいっぱい": {
+  "artist": "国愛めみ",
+  "song": "愛めいっぱい",
+  "status": "added",
+  "video_id": "OuUEr4FuB7s"
+ },
+ "三ツ星ルナちゃん|とにかく売れたいvtuberの歌服従せよ": {
+  "artist": "三ツ星ルナちゃん",
+  "song": "とにかく売れたいvtuberの歌「服従せよ」",
+  "status": "added",
+  "video_id": "yGC-USaQY_k"
+ },
+ "宮守ゆり|天球のサイン": {
+  "artist": "宮守ゆり",
+  "song": "天球のサイン",
+  "status": "added",
+  "video_id": "-p_v_j55FOI"
+ },
+ "らびぱれ|ノイズキャンセル": {
+  "artist": "らびぱれ!!",
+  "song": "ノイズキャンセル",
+  "status": "added",
+  "video_id": "moYoLzpQ5QU"
+ },
+ "手毬はなん|キミハナ": {
+  "artist": "手毬はなん",
+  "song": "キミハナ",
+  "status": "added",
+  "video_id": "9UyOzljkIMw"
  }
 }
