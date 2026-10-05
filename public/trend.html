@@ -196,5 +196,5 @@ $("table").innerHTML =
   D.table.map((r, i) => `<tr><td>${r.rank}</td><td class="name">${i < D.series.length ? `<span class="sw" style="background:${COLORS[i]}"></span>` : ""}${esc(r.song)}<small>${esc(r.artist)}</small></td>${
     r.days.map(v => `<td>${v || "–"}</td>`).join("")}<td class="total">${r.total}</td></tr>`).join("") + "</tbody>";
 </script>
-<p style="text-align:center;font-size:13px;padding-bottom:32px"><a href="https://mc-ranking-utahajimari.trapplejp.workers.dev/" style="color:var(--accent)">投票文をかんたん作成 →</a></p>
+<p style="text-align:center;font-size:13px;padding-bottom:32px;display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap"><a href="https://mc-ranking-utahajimari.trapplejp.workers.dev/" style="color:var(--accent)">投票文をかんたん作成 →</a><a href="https://www.youtube.com/playlist?list=PLYBbwA0JTgbw" target="_blank" rel="noopener" style="color:var(--accent)">🎧 投票曲まとめプレイリスト →</a></p>
 </html>

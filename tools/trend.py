@@ -67,7 +67,10 @@ def main():
             f'<meta property="og:description" content="{data["asOf"]}時点・公開ポストのみの勝手に集計。上位曲の票数推移と日別票数。">\n'
             '<meta name="twitter:card" content="summary_large_image">\n'
             '<style>body{margin:0}</style>\n')
-    back = f'<p style="text-align:center;font-size:13px;padding-bottom:32px"><a href="{site}/" style="color:var(--accent)">投票文をかんたん作成 →</a></p>\n'
+    playlist = html.escape(tally.CFG["playlist_url"])
+    back = ('<p style="text-align:center;font-size:13px;padding-bottom:32px;display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap">'
+            f'<a href="{site}/" style="color:var(--accent)">投票文をかんたん作成 →</a>'
+            f'<a href="{playlist}" target="_blank" rel="noopener" style="color:var(--accent)">🎧 投票曲まとめプレイリスト →</a></p>\n')
     (ROOT / "public/trend.html").write_text(head + page + back + "</html>\n")
     render_og(data)
     print(f"wrote public/trend.html (as of {data['asOf']} JST, {len(votes)} votes, top {len(top)})")
